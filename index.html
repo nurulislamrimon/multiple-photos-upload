@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Photo test</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+      form {
+        margin: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Add new product</h1>
+    <form onsubmit="handleSubmit(event)">
+      <input type="file" name="productPhotos" />
+      <input type="file" name="productPhotos" />
+      <input type="file" name="productPhotos" />
+      <button>Submit</button>
+    </form>
+    <script>
+      const appendProductToFormData = (product) => {
+        const formData = new FormData();
+
+        // Helper function to append nested objects
+        const appendNestedObject = (formData, key, value) => {
+          if (Array.isArray(value)) {
+            value.forEach((item, index) => {
+              formData.append(key, item);
+            });
+          } else {
+            formData.append(key, value);
+          }
+        };
+
+        // Append product properties
+        Object.entries(product).forEach(([key, value]) => {
+          appendNestedObject(formData, key, value);
+        });
+
+        return formData;
+      };
+
+      const product = {
+        _id: "670521722e327642263b7fdc",
+        productName: "Printer Alpha 1.0.6",
+        productUrlSlug: "value-top",
+        brandId: "66fe3a3fbea019528f4b094f",
+        categoryId: "66fe3a26bea019528f4b0932",
+        productTags: [],
+        activityStatus: true,
+        variants: [
+          {
+            isDefault: true,
+            variantName: "Not specified",
+            variantPhotos: [],
+            inStock: 100,
+            stockAlert: 100,
+            sellingPrice: 300,
+            _id: "65f807d1d2e18d86b63c6848",
+            createdAt: "2024-10-08T17:40:50.155Z",
+            updatedAt: "2024-10-08T17:40:50.155Z",
+          },
+        ],
+        videoLink: "https://youtu.be/IvSc-dBZAPs",
+        specifications: [
+          {
+            sectionName: "gas",
+            blocks: [
+              {
+                title: " s",
+                description: " df",
+                _id: "670521722e327642263b7fdf",
+              },
+            ],
+            _id: "670521722e327642263b7fde",
+          },
+        ],
+        description: {
+          time: 1667664000000,
+          version: "2",
+          _id: "670521722e327642263b7fe2",
+          blocks: [],
+        },
+        bulk: {
+          minOrder: 855,
+          discount: 11,
+        },
+        seo: {
+          metaTitle: "casing",
+          metaDescription: "Value-Top V500W Mini Tower Micro ATX Gaming Casing",
+        },
+      };
+
+      // Example usage
+
+      // Now `formData` is ready for submission, e.g., in a fetch request.
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        const formData = appendProductToFormData(product);
+        const accessToken =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmY4MGRkYmUwZjNhNmMwNzUxOThlMDUiLCJmdWxsTmFtZSI6IlpheWVkIEhvc3NhaW4iLCJyb2xlIjoiQWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInBob25lTnVtYmVyIjoiMDE2MTI4NDk0NTEiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpYXQiOjE3Mjg0NzQwNTIsImV4cCI6MTcyODU2MDQ1Mn0.oaLXHPUVepRtQ-3anpnljYLTGwjrjM3eNNNwy2QtJFA";
+
+        const res = await fetch(
+          "https://api.elitecommerce.app/api/v1/product/add",
+          {
+            headers: {
+              authorization: "bearer " + accessToken,
+            },
+            method: "POST",
+            body: formData,
+          }
+        );
+        const data = await res.json();
+        console.log(data);
+      };
+    </script>
+  </body>
+</html>
