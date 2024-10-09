@@ -119,6 +119,7 @@
         e.preventDefault();
 
         const formData = appendProductToFormData(product);
+        let files = [];
 
         // ---------------------
         // file input
@@ -130,9 +131,13 @@
         fileInputs.forEach((input, index) => {
           if (input.files.length > 0) {
             for (let i = 0; i < input.files.length; i++) {
-              formData.append(`productPhotos`, input.files[i]);
+              files = [...files, input.files[i]];
             }
           }
+        });
+
+        files.forEach((file) => {
+          formData.append(`productPhotos`, file);
         });
 
         // ---------------------
@@ -141,21 +146,26 @@
         const accessToken =
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmY4MGRkYmUwZjNhNmMwNzUxOThlMDUiLCJmdWxsTmFtZSI6IlpheWVkIEhvc3NhaW4iLCJyb2xlIjoiQWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInBob25lTnVtYmVyIjoiMDE2MTI4NDk0NTEiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpYXQiOjE3Mjg0NzQwNTIsImV4cCI6MTcyODU2MDQ1Mn0.oaLXHPUVepRtQ-3anpnljYLTGwjrjM3eNNNwy2QtJFA";
 
-        const res = await fetch(
-          "https://api.elitecommerce.app/api/v1/product/add",
-          {
-            headers: {
-              authorization: "bearer " + accessToken,
-            },
-            method: "POST",
-            body: formData,
-          }
-        );
-        const data = await res.json();
-
         const output = document.getElementById("output");
-        output.innerText = JSON.stringify(data);
-        console.log(data);
+        try {
+          const res = await fetch(
+            "https://api.elitecommerce.app/api/v1/product/add",
+            {
+              headers: {
+                authorization: "bearer " + accessToken,
+              },
+              method: "POST",
+              body: formData,
+            }
+          );
+          const data = await res.json();
+
+          console.log(data);
+          output.innerText = JSON.stringify(data);
+        } catch (error) {
+          console.log(error);
+          output.innerText = JSON.stringify(error);
+        }
       };
     </script>
   </body>
