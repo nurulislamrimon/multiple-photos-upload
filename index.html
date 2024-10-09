@@ -41,10 +41,16 @@
         const appendNestedObject = (formData, key, value) => {
           if (Array.isArray(value)) {
             value.forEach((item, index) => {
-              formData.append(key, item);
+              formData.append(
+                `${key}`,
+                typeof item === "object" ? JSON.stringify(item) : item
+              );
             });
           } else {
-            formData.append(key, value);
+            formData.append(
+              `${key}`,
+              typeof value === "object" ? JSON.stringify(value) : value
+            );
           }
         };
 
@@ -57,7 +63,6 @@
       };
 
       const product = {
-        _id: "670521722e327642263b7fdc",
         productName: "Printer Alpha 1.0.6",
         productUrlSlug: "value-top",
         brandId: "66fe3a3fbea019528f4b094f",
@@ -72,6 +77,7 @@
             inStock: 100,
             stockAlert: 100,
             sellingPrice: 300,
+            buyingPrice: 50,
             _id: "65f807d1d2e18d86b63c6848",
             createdAt: "2024-10-08T17:40:50.155Z",
             updatedAt: "2024-10-08T17:40:50.155Z",
@@ -113,7 +119,27 @@
 
       const handleSubmit = async (e) => {
         e.preventDefault();
+
         const formData = appendProductToFormData(product);
+
+        // ---------------------
+        // file input
+        // ---------------------
+        const form = e.target;
+        const fileInputs = form.querySelectorAll('input[type="file"]');
+
+        // Loop through each file input and append files to formData
+        fileInputs.forEach((input, index) => {
+          if (input.files.length > 0) {
+            for (let i = 0; i < input.files.length; i++) {
+              formData.append(`productPhotos`, input.files[i]);
+            }
+          }
+        });
+
+        // ---------------------
+        // api request
+        // ---------------------
         const accessToken =
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmY4MGRkYmUwZjNhNmMwNzUxOThlMDUiLCJmdWxsTmFtZSI6IlpheWVkIEhvc3NhaW4iLCJyb2xlIjoiQWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInBob25lTnVtYmVyIjoiMDE2MTI4NDk0NTEiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpYXQiOjE3Mjg0NzQwNTIsImV4cCI6MTcyODU2MDQ1Mn0.oaLXHPUVepRtQ-3anpnljYLTGwjrjM3eNNNwy2QtJFA";
 
